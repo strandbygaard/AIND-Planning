@@ -105,7 +105,6 @@ class PgNode_s(PgNode):
 class PgNode_a(PgNode):
     """A-type (action) Planning Graph node - inherited from PgNode """
 
-
     def __init__(self, action: Action):
         """A-level Planning Graph node constructor
 
@@ -312,33 +311,14 @@ class PlanningGraph():
         #   action node is added, it MUST be connected to the S node instances in the appropriate s_level set.
 
         self.a_levels.append(set())
+        s_level = self.s_levels[level]
         for action in self.all_actions:
             pg_node_a = PgNode_a(action)
-            s_level = self.s_levels[level]
-
-            #TODO this subset check is broken. Fix it.
-            # it adds A as children to S, before we know that A.prenodes is actually a subset of the previous
-            # S level
-            # Check if all prenodes exist in the previous S level
-            prenodes_subset_s = True
-            for n in pg_node_a.prenodes:
-                seen = False
-                for s in s_level:
-                    if n.symbol == s.symbol:
-                        seen = True
-                        s.children.add(pg_node_a)
-                        break
-                if not seen:
-                    prenodes_subset_s = False
-                    continue
-
-            # If prenodes of the A node isn't a subset of an S node, don't add it to the A level
-            if not prenodes_subset_s:
-                continue
-
-            self.a_levels[level].add(pg_node_a)
-
-
+            if pg_node_a.prenodes.issubset(s_level):
+                for pg_node_s in s_level:
+                    pg_node_s.children.add(pg_node_a)
+                    pg_node_a.parents.add(pg_node_s)
+                self.a_levels[level].add(pg_node_a)
 
     def add_literal_level(self, level):
         """ add an S (literal) level to the Planning Graph
@@ -357,6 +337,13 @@ class PlanningGraph():
         #   may be "added" to the set without fear of duplication.  However, it is important to then correctly create and connect
         #   all of the new S nodes as children of all the A nodes that could produce them, and likewise add the A nodes to the
         #   parent sets of the S nodes
+        self.s_levels.append(set())  # Initialize this level of states
+        a_level = self.a_levels[level - 1]  # Previous action level (previous to this level of states)
+        for pg_node_a in a_level:
+            for eff_node in pg_node_a.effnodes:
+                pg_node_a.children.add(eff_node)
+                eff_node.parents.add(pg_node_a)
+                self.s_levels[level].add(eff_node)
 
     def update_a_mutex(self, nodeset):
         """ Determine and update sibling mutual exclusion for A-level nodes
@@ -414,8 +401,9 @@ class PlanningGraph():
         :param node_a2: PgNode_a
         :return: bool
         """
-        # TODO test for Inconsistent Effects between nodes
-        return False
+        a2_cancel_a1 = set(node_a1.action.effect_add) & set(node_a2.action.effect_rem)
+        a1_cancel_a2 = set(node_a2.action.effect_add) & set(node_a1.action.effect_rem)
+        return bool(a2_cancel_a1 | a1_cancel_a2)
 
     def interference_mutex(self, node_a1: PgNode_a, node_a2: PgNode_a) -> bool:
         """
@@ -432,7 +420,12 @@ class PlanningGraph():
         :return: bool
         """
         # TODO test for Interference between nodes
-        return False
+        a1_neg_a2 = bool(set(node_a1.action.effect_add) & set(node_a2.action.precond_neg) |
+                         set(node_a1.action.effect_rem) & set(node_a2.action.precond_pos))
+
+        a2_neg_a1 = bool(set(node_a2.action.effect_add) & set(node_a1.action.precond_neg) |
+                         set(node_a2.action.effect_rem) & set(node_a1.action.precond_pos))
+        return bool(a1_neg_a2 | a2_neg_a1)
 
     def competing_needs_mutex(self, node_a1: PgNode_a, node_a2: PgNode_a) -> bool:
         """
@@ -446,6 +439,10 @@ class PlanningGraph():
         """
 
         # TODO test for Competing Needs between nodes
+        for parent_a1 in node_a1.parents:
+            for parent_a2 in node_a2.parents:
+                if parent_a1.is_mutex(parent_a2):
+                    return True
         return False
 
     def update_s_mutex(self, nodeset: set):
@@ -462,10 +459,10 @@ class PlanningGraph():
             mutex set in each PgNode_a in the set is appropriately updated
         """
         nodelist = list(nodeset)
-        for i, n1 in enumerate(nodelist[:-1]):
-            for n2 in nodelist[i + 1:]:
-                if self.negation_mutex(n1, n2) or self.inconsistent_support_mutex(n1, n2):
-                    mutexify(n1, n2)
+        for index, node_1 in enumerate(nodelist[:-1]):
+            for node_2 in nodelist[index + 1:]:
+                if self.negation_mutex(node_1, node_2) or self.inconsistent_support_mutex(node_1, node_2):
+                    mutexify(node_1, node_2)
 
     def negation_mutex(self, node_s1: PgNode_s, node_s2: PgNode_s) -> bool:
         """
@@ -481,7 +478,7 @@ class PlanningGraph():
         :return: bool
         """
         # TODO test for negation between nodes
-        return False
+        return (node_s1.symbol == node_s2.symbol) and (node_s1.is_pos != node_s2.is_pos)
 
     def inconsistent_support_mutex(self, node_s1: PgNode_s, node_s2: PgNode_s):
         """
@@ -500,7 +497,11 @@ class PlanningGraph():
         :return: bool
         """
         # TODO test for Inconsistent Support between nodes
-        return False
+        for parent_s1 in node_s1.parents:
+            for s2_parent in node_s2.parents:
+                if not parent_s1.is_mutex(s2_parent):
+                    return False
+        return True
 
     def h_levelsum(self) -> int:
         """The sum of the level costs of the individual goals (admissible if goals independent)
@@ -510,4 +511,12 @@ class PlanningGraph():
         level_sum = 0
         # TODO implement
         # for each goal in the problem, determine the level cost, then add them together
+        goals = self.problem.goal
+        s_levels = self.s_levels
+        for goal in goals:
+            pg_node_s = PgNode_s(goal, True)
+            for s_level, s_nodes in enumerate(s_levels):
+                if pg_node_s in s_nodes:
+                    level_sum += s_level
+                    break
         return level_sum
