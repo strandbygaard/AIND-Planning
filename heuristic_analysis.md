@@ -1,47 +1,78 @@
 # Heuristic Analysis
+By Martin Strandbygaard
 
-_Optimal plan for problems 1, 2 and 3_
+September 10th, 2017
+## Search Result Metrics
 
-_Compare and contrast non-heuristic search result metrics (optimality, time elapsed, number of node expansions) for Problems 1,2, and 3. Include breadth-first, depth-first, and at least one other uninformed non-heuristic search in your comparison; Your third choice of non-heuristic search may be skipped for Problem 3 if it takes longer than 10 minutes to run, but a note in this case should be included_
+The following sections provide results for solving each of the air cargo problems using both non-informed and heuristic methods.
 
-_Compare and contrast heuristic search result metrics using A* with the "ignore preconditions" and "level-sum" heuristics for Problems 1, 2, and 3._
-
-_What was the best heuristic used in these problems? Was it better than non-heuristic search planning methods for all problems? Why or why not?_
-
-_Provide tables or other visual aids as needed for clarity in your discussion._
+A solution could be found for all problems with all algorithms in less than 11 minutes. Only three combinations took more than one minute to solve, and only one combination took more than approx. 2 minutes to find a solution (problem 3  with A* Search (h_pg_levelsum)).
 
 
-## Uninformed Planning Searches
 
 ### Air Cargo Problem 1 Results
+The optimal plan for air cargo problem 1 was found using the breadth first search algorithm.
 
 | Algorithm                          | Node  Expansions | Goal Tests | New Nodes | Length | Time [s] | Optimal |
 |------------------------------------|:----------------:|:----------:|:---------:|:------:|:--------:|:-------:|
-| Breadth-first                      |                  |            |           |        |          |   True  |
-| Depth-first                        |                  |            |           |        |          |  False  |
-| Uniform cost                       |                  |            |           |        |          |   True  |
-| A* Search (h_1)                    |                  |            |           |        |          |   True  |
-| A* Search (h_ignore_preconditions) |                  |            |           |        |          |   True  |
-| A* Search (h_pg_levelsum)          |                  |            |           |        |          |   True  |
+| Breadth-first                      | 43               | 56         | 180       |  6     | 0.0215   |   Yes   |
+| Depth-first                        | 12               | 13         |  48       | 12     | 0.0059   |   No    |
+| Uniform cost                       | 55               | 57         | 224       |  6     | 0.0253   |   Yes   |
+| A* Search (h_1)                    | 55               | 57         | 224       |  6     | 0.0260   |   Yes   |
+| A* Search (h_ignore_preconditions) | 41               | 43         | 170       |  6     | 0.0255   |   Yes   |
+| A* Search (h_pg_levelsum)          | 11               | 13         |  50       |  6     | 0.7416   |   Yes   |
 
 ### Air Cargo Problem 2 Results
+The optimal plan for air cargo problem 2 was found using the uniform cost search algorithm. The performance of A* Search (h_1) was almost identical to that of uniform cost search, and it's difficult to determine, if the difference in measured execution time is significant or due to variance. 
 
 | Algorithm                          | Node  Expansions | Goal Tests | New Nodes | Length | Time [s] | Optimal |
 |------------------------------------|:----------------:|:----------:|:---------:|:------:|:--------:|:-------:|
-| Breadth-first                      |                  |            |           |        |          |   True  |
-| Depth-first                        |                  |            |           |        |          |  False  |
-| Uniform cost                       |                  |            |           |        |          |   True  |
-| A* Search (h_1)                    |                  |            |           |        |          |   True  |
-| A* Search (h_ignore_preconditions) |                  |            |           |        |          |   True  |
-| A* Search (h_pg_levelsum)          |                  |            |           |        |          |   True  |
+| Breadth-first                      | 3343             | 4609       | 30509     |  9     | 9.3092   |   Yes   |
+| Depth-first                        | 582              | 583        | 5211      | 575    | 2.1052   |   No    |
+| Uniform cost                       | 4853             | 4855       | 44041     |  9     | 8.0531   |   Yes   |
+| A* Search (h_1)                    | 4853             | 4855       | 44041     |  9     | 8.0819   |   Yes   |
+| A* Search (h_ignore_preconditions) | 1450             | 1452       | 13303     |  9     | 2.8961   |   Yes   |
+| A* Search (h_pg_levelsum)          |   86             |   88       |   841     |  9     | 122.76   |   Yes   |
 
 ### Air Cargo Problem 3 Results
 
 | Algorithm                          | Node  Expansions | Goal Tests | New Nodes | Length | Time [s] | Optimal |
 |------------------------------------|:----------------:|:----------:|:---------:|:------:|:--------:|:-------:|
-| Breadth-first                      |                  |            |           |        |          |   True  |
-| Depth-first                        |                  |            |           |        |          |  False  |
-| Uniform cost                       |                  |            |           |        |          |   True  |
-| A* Search (h_1)                    |                  |            |           |        |          |   True  |
-| A* Search (h_ignore_preconditions) |                  |            |           |        |          |   True  |
-| A* Search (h_pg_levelsum)          |                  |            |           |        |          |   True  |
+| Breadth-first                      | 14663            | 18098      | 129631    | 12     | 70.923   |   Yes   |
+| Depth-first                        | 627              | 628        | 5176      | 596    |  2.228   |   No    |
+| Uniform cost                       | 18164            | 18166      | 159147    | 12     | 35.469   |   Yes   |
+| A* Search (h_1)                    | 18164            | 18166      | 159147    | 12     | 35.432   |   Yes   |
+| A* Search (h_ignore_preconditions) | 5038             | 5040       | 44924     | 12     | 11.426   |   Yes   |
+| A* Search (h_pg_levelsum)          |  314             |  316       |  2894     | 12     | 632.66   |   Yes   |
+
+
+## Optimal Plan For Air Cargo Problems 1, 2, and 3
+
+The following table lists the _optimal_ sequence for solving each of the three air cargo problems. 
+
+Based on the results reported in the previous section, the fastest, optimal solution was chosen and the plan for this solution is listed in the table below. 
+
+| Problem             |          Search  Algorithm         |                                                                                                        Optimal  Sequence                                                                                                          |
+|---------------------|:----------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| Air Cargo Problem 1 | Breadth First                      |                                                         Load(C2, P2, JFK)<br> Load(C1, P1, SFO) <br> Fly(P2, JFK, SFO) <br> Unload(C2, P2, SFO) <br> Fly(P1, SFO, JFK) <br> Unload(C1, P1, JFK)                                   |
+| Air Cargo Problem 2 | A* Search (h_ignore_preconditions) |                             Load(C1, P1, SFO) <br> Fly(P1, SFO, JFK) <br> Unload(C1, P1, JFK) <br> Load(C3, P3, ATL) <br> Fly(P3, ATL, SFO) <br> Unload(C3, P3, SFO) <br> Load(C2, P2, JFK) Fly(P2, JFK, SFO) <br> Unload(C2, P2, SFO) |
+| Air Cargo Problem 3 | A* Search (h_ignore_preconditions) | Load(C1, P1, SFO) <br> Fly(P1, SFO, ATL) <br> Load(C3, P1, ATL) <br> Fly(P1, ATL, JFK) <br> Unload(C3, P1, JFK) <br> Unload(C1, P1, JFK) <br> Load(C2, P2, JFK) <br> Fly(P2, JFK, ORD) <br> Load(C4, P2, ORD) <br> Fly(P2, ORD, SFO) <br> Unload(C4, P2, SFO) <br> Unload(C2, P2, SFO) |
+
+
+## Evaluation Of Search Strategies
+Overall non-heuristic search algorithms performed the the best on air cargo problems 1 and 2. On problem 1 breadth-first performed the best, and uniform cost performed as well as A* Search (h_1) and A* Search (h_ignore_preconditions). This leads to the conclusion, that for the simple case in problem 1 a non-informed algorithm seems to be the best choice, since it performs as well as a heuristic algorithm, while at the same time being a simpler solution, which is generally preferred.
+
+For problems 2 and 3 A* Search (h_ignore_preconditions) outperformed all other algorithms, and this shows the advantages of a heuristic method, as the problem complexity increases.
+ 
+For all problems, A* Search (h_pg_levelsum) performed significantly worse than the other two variants of A*. The most likely explanation for this, is that the heuristic is too complex for the given problems.
+
+In all cases, the performance of A* Search (h_1) was almost identical to the non-informed uniform cost search algorithm. 
+
+Overall, for problems 1 breadth first seems to be the best approach, whereas for problem 2 and 3 A* Search (h_ignore_preconditions) is the best approach.
+
+In all cases, if an optimal plan is not important, then depth first search is significantly faster for the three problems.
+
+
+
+
+  
