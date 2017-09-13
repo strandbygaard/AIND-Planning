@@ -1,4 +1,5 @@
 # Heuristic Analysis
+
 By Martin Strandbygaard
 
 September 10th, 2017
@@ -9,9 +10,8 @@ The following sections provide results for solving each of the air cargo problem
 
 A solution could be found for all problems with all algorithms in less than 11 minutes. Only three combinations took more than one minute to solve, and only one combination took more than approx. 2 minutes to find a solution (problem 3  with A* Search (h_pg_levelsum)).
 
-
-
 ### Air Cargo Problem 1 Results
+
 The optimal plan for air cargo problem 1 was found using the breadth first search algorithm.
 
 | Algorithm                          | Node  Expansions | Goal Tests | New Nodes | Length | Time [s] | Optimal |
@@ -24,6 +24,7 @@ The optimal plan for air cargo problem 1 was found using the breadth first searc
 | A* Search (h_pg_levelsum)          | 11               | 13         |  50       |  6     | 0.7416   |   Yes   |
 
 ### Air Cargo Problem 2 Results
+
 The optimal plan for air cargo problem 2 was found using the uniform cost search algorithm. The performance of A* Search (h_1) was almost identical to that of uniform cost search, and it's difficult to determine, if the difference in measured execution time is significant or due to variance. 
 
 | Algorithm                          | Node  Expansions | Goal Tests | New Nodes | Length | Time [s] | Optimal |
@@ -51,16 +52,16 @@ The optimal plan for air cargo problem 2 was found using the uniform cost search
 
 The following table lists the _optimal_ sequence for solving each of the three air cargo problems. 
 
-Based on the results reported in the previous section, the fastest, optimal solution was chosen and the plan for this solution is listed in the table below. 
+Based on the results reported in the previous section, the fastest, optimal solution was chosen and the plan for this solution is listed in the table below.
 
 | Problem             |          Search  Algorithm         |                                                                                                        Optimal  Sequence                                                                                                          |
 |---------------------|:----------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| Air Cargo Problem 1 | Breadth First                      |                                                         Load(C2, P2, JFK)<br> Load(C1, P1, SFO) <br> Fly(P2, JFK, SFO) <br> Unload(C2, P2, SFO) <br> Fly(P1, SFO, JFK) <br> Unload(C1, P1, JFK)                                   |
+| Air Cargo Problem 1 | Breadth First                      |                                                         Load(C2, P2, JFK) <br/>  Load(C1, P1, SFO) <br> Fly(P2, JFK, SFO) <br> Unload(C2, P2, SFO) <br> Fly(P1, SFO, JFK) <br> Unload(C1, P1, JFK)                                   |
 | Air Cargo Problem 2 | A* Search (h_ignore_preconditions) |                             Load(C1, P1, SFO) <br> Fly(P1, SFO, JFK) <br> Unload(C1, P1, JFK) <br> Load(C3, P3, ATL) <br> Fly(P3, ATL, SFO) <br> Unload(C3, P3, SFO) <br> Load(C2, P2, JFK) Fly(P2, JFK, SFO) <br> Unload(C2, P2, SFO) |
 | Air Cargo Problem 3 | A* Search (h_ignore_preconditions) | Load(C1, P1, SFO) <br> Fly(P1, SFO, ATL) <br> Load(C3, P1, ATL) <br> Fly(P1, ATL, JFK) <br> Unload(C3, P1, JFK) <br> Unload(C1, P1, JFK) <br> Load(C2, P2, JFK) <br> Fly(P2, JFK, ORD) <br> Load(C4, P2, ORD) <br> Fly(P2, ORD, SFO) <br> Unload(C4, P2, SFO) <br> Unload(C2, P2, SFO) |
 
-
 ## Evaluation Of Search Strategies
+
 Overall non-heuristic search algorithms performed the the best on air cargo problems 1 and 2. On problem 1 breadth-first performed the best, and uniform cost performed as well as A* Search (h_1) and A* Search (h_ignore_preconditions). This leads to the conclusion, that for the simple case in problem 1 a non-informed algorithm seems to be the best choice, since it performs as well as a heuristic algorithm, while at the same time being a simpler solution, which is generally preferred.
 
 For problems 2 and 3 A* Search (h_ignore_preconditions) outperformed all other algorithms, and this shows the advantages of a heuristic method, as the problem complexity increases.
@@ -86,6 +87,3 @@ In all cases, if an optimal plan is not important, then depth first search is si
 [1] Stuart J. Russell, Peter Norvig (2010), Artificial Intelligence: A Modern Approach (3rd edition)
 
 [2] <https://www.youtube.com/watch?v=Fh5b8xVJhR8>
-
-
-  
