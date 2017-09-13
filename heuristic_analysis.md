@@ -2,6 +2,7 @@
 By Martin Strandbygaard
 
 September 10th, 2017
+
 ## Search Result Metrics
 
 The following sections provide results for solving each of the air cargo problems using both non-informed and heuristic methods.
@@ -68,11 +69,23 @@ For all problems, A* Search (h_pg_levelsum) performed significantly worse than t
 
 In all cases, the performance of A* Search (h_1) was almost identical to the non-informed uniform cost search algorithm. 
 
-Overall, for problems 1 breadth first seems to be the best approach, whereas for problem 2 and 3 A* Search (h_ignore_preconditions) is the best approach.
+Breadth first search is optimal and always finds the shortest path [1]. For simpler problem where the search space is small, the strategy of searching breadth first will reasonably quickly find an optimal solution.
+
+Depth first search very quickly finds a solution, and depth first search also has the benefit of only requiring a limited amount memory because it only considers one path at a time [2]. However, depth first search is not guaranteed to find an optimal solution [1]. 
+
+The intuition for this is, that depth first search, will search a path to the end. Suppose the search space is a circular graph with an odd number of nodes. Regardless of the direction in which depth first search starts, it will always find a solution, however, depending whether this solution is optimal depends on the direction the depth first search started in the graph.
+
+Also, depth first search is not complete. The intuition being, that for a tree graph with a branch of infinite length, depth first search will continue to search in infinity, and will not find a solution [2].
+
+Overall, for problem 1 breadth first seems to be the best approach, whereas for problem 2 and 3 A* Search (h_ignore_preconditions) is the best approach.
 
 In all cases, if an optimal plan is not important, then depth first search is significantly faster for the three problems.
 
+## References
 
+[1] Stuart J. Russell, Peter Norvig (2010), Artificial Intelligence: A Modern Approach (3rd edition)
+
+[2] <https://www.youtube.com/watch?v=Fh5b8xVJhR8>
 
 
   
